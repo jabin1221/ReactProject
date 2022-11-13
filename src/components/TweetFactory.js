@@ -12,6 +12,7 @@ import {Link} from "react-router-dom";
 import { authService } from "fBase";
 import Loader from "./Loader";
 import { async } from "@firebase/util";
+import Clock from "components/Clock";
 
 const TweetFactory = ({userObj}) => {
     const [tweet, setTweet] = useState("");
@@ -221,10 +222,11 @@ const TweetFactory = ({userObj}) => {
       
       posting ? 
       <>
-      
         <form onSubmit={onSubmit} className="factoryForm">
+        
           
         <div className="factoryInput__container">
+        <Clock></Clock>
         <table>
         <tr>
           <input
