@@ -6,6 +6,7 @@ import { updateProfile } from "@firebase/auth";
 import { dbService, storageService } from "fBase";
 import {orderBy, onSnapshot, query, getDocs, addDoc, collection, doc } from "firebase/firestore";
 
+
 function App() {
   console.log(authService.currentUser);
   const [init, setInit] = useState(false);
@@ -41,7 +42,7 @@ function App() {
     
     const user = authService.currentUser;
     setUserObj({
-      displayName: user.displayName,
+      disclockstatecclayName: user.displayName,
       uid: user.uid,
       updateProfile: (args) => updateProfile(user, { displayName: user.displayName }),
       });
