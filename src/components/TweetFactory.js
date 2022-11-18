@@ -20,6 +20,8 @@ const TweetFactory = ({userObj}) => {
     const [attachment, setAttachment] = useState("");
     const [hashtag, setHashTag] = useState("");
     const [posting, setPosting] = useState(false);
+    const [friend, setfriend] = useState(false);
+    const [mine, setMine] = useState(false);
     const [profile, setProfile] = useState(true);
     const [target, setTarget] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -63,6 +65,8 @@ const TweetFactory = ({userObj}) => {
         setTweet("");
         setAttachment("");
         togglePosting();
+        toggleMyPost();
+        toggleFriend();
         console.log(posting)
         
     };
@@ -204,6 +208,10 @@ const TweetFactory = ({userObj}) => {
       
     };
     const togglePosting = () => setPosting(prev => !prev);
+
+    const toggleMyPost = () => setMine(prev => !prev);
+
+    const toggleFriend = () => setfriend(prev => !prev);
     
     const onFileChange = (event) => {
         const {target:{files}, } = event;
@@ -226,7 +234,6 @@ const TweetFactory = ({userObj}) => {
         
           
         <div className="factoryInput__container">
-        <Clock></Clock>
         <table>
         <tr>
           <input
@@ -276,11 +283,54 @@ const TweetFactory = ({userObj}) => {
         </form>
         </>
         :
-        profile ? 
+
+
+
+
+
+        mine ? 
+        <>
+         <span onClick={togglePosting} className="postBtn">
+          Post
+        </span>
+        <span onClick={toggleMyPost} className="formBtn cancelBtn">
+          Cancel
+          </span>
+          <br>
+          </br>
+         
+        
+          <span className="postBtn">This is My Post!!!!!</span>
+        <div style={{ marginTop: 30 }}>
+
+            {tweets.map((tweet) => (
+                (tweet.count == 1 &&tweet.creatorId === userObj.uid&&
+                <Tweet key={tweet.id} tweetObj={tweet} isOwner = {tweet.creatorId === userObj.uid} currentuser = {userObj.uid}/>)
+            ))}
+
+            <div ref={setTarget} className="Target-Element">
+              {isLoaded && <Loader />}
+            </div>
+        </div>
+        </>
+        :
+
+
+        friend ? 
+        <>
+         
+        </>
+        :
+
+
         <>
         
         <span onClick={togglePosting} className="postBtn">
           Post
+        </span>
+
+        <span onClick={toggleMyPost} className="postBtn">
+          my post
         </span>
         
           
@@ -312,9 +362,6 @@ const TweetFactory = ({userObj}) => {
         </div>
         
         
-    </>
-    : 
-    <>
     </>
     )
 }

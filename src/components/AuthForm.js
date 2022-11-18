@@ -1,6 +1,7 @@
 import { authService, firebaseInstance } from "fBase";
 import React, {useState} from "react";
 import Clock from "components/Clock";
+import Main from "components/Main";
 import {
     createUserWithEmailAndPassword,
     getAuth,
@@ -47,7 +48,6 @@ const AuthForm = () => {
     const toggleAccount = () => setNewAccount(prev => !prev);
     return (
         <>
-        <Clock></Clock>
         <form onSubmit={onSubmit} className="container">
         <input name = "email"
         type = "text"

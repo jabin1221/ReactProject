@@ -75,21 +75,6 @@ const Home = ({userObj}) => {
             
             
     }, []);
-    
-   
-   
-
-    
-    
-
-
-
-    
-
-    
-
-    
-    
     return(
         <div className="container">
         <TweetFactory userObj={userObj} />

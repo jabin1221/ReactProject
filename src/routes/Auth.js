@@ -14,6 +14,8 @@ import {
   faGoogle,
   faGithub,
 } from "@fortawesome/free-brands-svg-icons";
+import Clock from "components/Clock";
+import Main from "components/Main";
 
 const Auth = () => {
     
@@ -34,12 +36,15 @@ const Auth = () => {
     
 return (
 <div className="authContainer">
+
+      
       <FontAwesomeIcon
         icon={faTwitter}
         color={"#04AAFF"}
         size="3x"
         style={{ marginBottom: 30 }}
       />
+      <Clock />
     <AuthForm />
     <div className="authBtns">
         <button onClick={onSocialClick} name="google" className="authBtn">
