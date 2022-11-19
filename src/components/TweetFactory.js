@@ -178,6 +178,25 @@ const TweetFactory = ({userObj}) => {
 };
     
     const onFind = (event) => {
+
+      const q = query(
+            
+        collection(dbService, "tweets"),
+        orderBy("createdAt", "desc")
+        );
+        
+         onSnapshot(q, (snapshot) => {
+        const tweetArr = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        }));
+        
+        console.log(tweetArr);
+        setTweets(tweetArr);
+        
+        
+        
+        });
       
       console.log(authService.currentUser.email)
      
@@ -195,7 +214,13 @@ const TweetFactory = ({userObj}) => {
             updateDoc(doc(dbService, "tweets", `${tweets[i].id}`), {
               count: 1,
               });
-          }else{
+          }
+          else if(tweets[i].user == tweet){
+            updateDoc(doc(dbService, "tweets", `${tweets[i].user}`), {
+              count: 2,
+              });
+          }
+          else{
             updateDoc(doc(dbService, "tweets", `${tweets[i].id}`), {
               count: 0,
               });
@@ -315,7 +340,25 @@ const TweetFactory = ({userObj}) => {
 
         friend ? //미완성
         <>
+          <span onClick={toggleMyPost} className="formBtn cancelBtn">
+          Back
+          </span>
+          <br>
+          </br>
          
+        
+          <span className="postBtn">This is My Post!!!!!</span>
+        <div style={{ marginTop: 30 }}>
+
+            {tweets.map((tweet) => (
+                (tweet.count == 1 &&tweet.creatorId === userObj.uid&&
+                <Tweet key={tweet.id} tweetObj={tweet} isOwner = {tweet.creatorId === userObj.uid} currentuser = {userObj.uid}/>)
+            ))}
+
+            <div ref={setTarget} className="Target-Element">
+              {isLoaded && <Loader />}
+            </div>
+        </div>
         </>
         :
 
