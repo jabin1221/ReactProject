@@ -382,7 +382,7 @@ const TweetFactory = ({userObj}) => {
             value={tweet}
             onChange={onChange2}
             type="text"
-            //placeholder="What do you want to find?"
+            placeholder="해시태그 검색"
             maxLength={120}
           />
           <input type="submit" value="&rarr;" className="factoryInput__arrow2" />
