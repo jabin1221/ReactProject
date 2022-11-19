@@ -290,11 +290,8 @@ const TweetFactory = ({userObj}) => {
 
         mine ? 
         <>
-         <span onClick={togglePosting} className="postBtn">
-          Post
-        </span>
         <span onClick={toggleMyPost} className="formBtn cancelBtn">
-          Cancel
+          Back
           </span>
           <br>
           </br>
@@ -316,7 +313,7 @@ const TweetFactory = ({userObj}) => {
         :
 
 
-        friend ? 
+        friend ? //미완성
         <>
          
         </>
