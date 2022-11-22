@@ -13,12 +13,12 @@ import { faUser, faUserCircle, faHeart } from "@fortawesome/free-solid-svg-icons
 import View from "components/View";
 
 
-const Friend = ({userObj}) => {
+const Friend = ({userObj, refreshUser}) => {
     const [users, setUsers] = useState([])
     const [tweets, setTweets] = useState([])
     const [viewing, setViewing] = useState(true)
     const [destuser, Setdestuser] = useState(null)
-    var id = "";
+    
     
     
     useEffect(() => {
@@ -59,7 +59,7 @@ const Friend = ({userObj}) => {
         console.log(user.id)
         
         Setdestuser(user)
-        console.log(destuser)
+        console.log(user)
         console.log(viewing)
         toggleViewing()
         
@@ -88,7 +88,7 @@ const Friend = ({userObj}) => {
         :
         <>
         <div>
-           <View userObj={userObj} isUser={userObj.uid === destuser.uid} destuser={destuser} id = {id}/>
+           <View userObj={userObj} destuser={destuser} userall={users} refreshUser = {refreshUser}/>
         </div>
         </>
     )

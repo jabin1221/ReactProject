@@ -10,6 +10,7 @@ import Home from "routes/Home";
 import Profile from "routes/Profile";
 import Navigation from "components/Navigation";
 import Friend from "routes/Friend";
+import Setting from "routes/Setting"
 
 
 const AppRouter = ({refreshUser, isLoggedIn, userObj}) => {
@@ -38,6 +39,9 @@ const AppRouter = ({refreshUser, isLoggedIn, userObj}) => {
                 </Route>
                 <Route exact path="/friend">
                     <Friend userObj={userObj} refreshUser={refreshUser}/>
+                </Route>
+                <Route exact path="/setting">
+                    <Setting userObj={userObj} refreshUser={refreshUser}/>
                 </Route>
                 
                 

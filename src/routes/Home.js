@@ -53,6 +53,7 @@ const Home = ({userObj}) => {
                 ...doc.data(),
                 }));
             console.log(userArr);
+            setUsers(userArr)
             let find = 0;
             for(let i = 0 ; i < userArr.length; i++){
                 if(user.uid == userArr[i].uid){
@@ -67,9 +68,13 @@ const Home = ({userObj}) => {
                 followings: [],
                 follow: 0, // 팔로우 해준 사람
                 follows: [],
+                show: "all",
+                name: "test",
                     };
                 addDoc(collection(dbService, "users"), userObj);
             }
+            console.log("ok")
+            console.log(userArr)
            // setUsers(userArr);
         });
             
@@ -92,7 +97,7 @@ const Home = ({userObj}) => {
     
     return(
         <div className="container">
-        <TweetFactory userObj={userObj} />
+        <TweetFactory userObj={userObj} userArr={users} />
         
         
         
@@ -101,3 +106,4 @@ const Home = ({userObj}) => {
 };
 
 export default Home;
+

@@ -17,7 +17,7 @@ const AuthForm = () => {
     const [newAccount, setNewAccount] = useState(false);
     const [error, setError] = useState("");
     const onChange = (event) =>{
-        const {target: {name, value}} = event;
+        const {target: {name, value},} = event;
         if(name === "email"){
             setEmail(value);
         }else if(name === "password"){
@@ -25,7 +25,7 @@ const AuthForm = () => {
         }
     };
     const onSubmit = async(event) => {
-        //event.preventDafault();
+        
          try{
              let data;
              const auth = getAuth();
@@ -34,6 +34,7 @@ const AuthForm = () => {
              console.log("real")
              
          }else{
+            console.log("input")
              data = await signInWithEmailAndPassword(auth, email, password);
              
          }
