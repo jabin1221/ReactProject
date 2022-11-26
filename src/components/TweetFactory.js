@@ -12,7 +12,6 @@ import {Link} from "react-router-dom";
 import { authService } from "fBase";
 import Loader from "./Loader";
 import { async } from "@firebase/util";
-import Clock from "components/Clock";
 
 const TweetFactory = ({userObj, userArr}) => {
     const [tweet, setTweet] = useState("");
@@ -20,11 +19,10 @@ const TweetFactory = ({userObj, userArr}) => {
     const [attachment, setAttachment] = useState("");
     const [hashtag, setHashTag] = useState("");
     const [posting, setPosting] = useState(false);
-    const [friend, setfriend] = useState(false);
-    const [mine, setMine] = useState(false);
     const [profile, setProfile] = useState(true);
     const [target, setTarget] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [defURL,setDefURL] = useState("");
     var firstLoaded=0;
     var lastdata;
     const onSubmit = async (event) => {
@@ -57,35 +55,23 @@ const TweetFactory = ({userObj, userArr}) => {
             user: authService.currentUser.email,
             heart: 0,
             heartuser : [],
+            name: userObj.displayName,
             view : 0,
-            
+            userURL : userObj.photoURL,
             };
         await addDoc(collection(dbService, "tweets"), tweetObj);
         
         setTweet("");
         setAttachment("");
         togglePosting();
-        toggleMyPost();
-        toggleFriend();
         console.log(posting)
         window.location.replace("/");
         
     };
 
+ 
 
-/*     useEffect(() => {
-      const q = query(
-        collection(dbService, "tweets"),
-        orderBy("createdAt", "desc"),
-        limit(3),
-        );
-      const dbTweets = getDocs(q);
-      const tweetArr = dbTweets.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        }));
-          setTweets(tweetArr);
-  }, []); //first data load */
+  
 
   
     const getMoreTweets = async () => {
@@ -94,7 +80,7 @@ const TweetFactory = ({userObj, userArr}) => {
         let q = query(
           collection(dbService, "tweets"),
           orderBy("createdAt", "desc"),
-          limit(3)
+          limit(5)
           );
         
         const dbTweets = await getDocs(q);
@@ -104,7 +90,6 @@ const TweetFactory = ({userObj, userArr}) => {
           }));
         
         setTweets((tweets) => tweets.concat(tweetArr));
-        console.log(tweetArr[tweetArr.length-1].createdAt);
         lastdata=tweetArr[tweetArr.length-1].createdAt;
         firstLoaded++;
         }
@@ -113,7 +98,7 @@ const TweetFactory = ({userObj, userArr}) => {
           let q = query(
             collection(dbService, "tweets"),
             orderBy("createdAt", "desc"),
-            limit(3),
+            limit(5),
             startAfter(lastdata)
             );
           
@@ -125,8 +110,6 @@ const TweetFactory = ({userObj, userArr}) => {
           
           setTweets((tweets) => tweets.concat(tweetArr));
           lastdata=tweetArr[tweetArr.length-1].createdAt;
-          console.log(tweetArr[tweetArr.length-1].createdAt);
-
         }
       
       
@@ -145,6 +128,11 @@ const TweetFactory = ({userObj, userArr}) => {
     };
 
     useEffect(() => {
+      console.log(userArr)
+      getDownloadURL(ref(storageService, 'images/default.jpg')).then((url) => {
+        setDefURL(url)
+      })
+      console.log(userObj)
       let observer;
       if (target) {
         observer = new IntersectionObserver(onIntersect, {
@@ -162,42 +150,25 @@ const TweetFactory = ({userObj, userArr}) => {
     const onChange = (event) =>{
         const {target:{value}, } = event;
         setTweet(value);
-        console.log(value);
+        
 
     };
     const onChange2 = (event) =>{
       const {target:{value}, } = event;
       setTweet(value);
-      console.log(value);
+      
 
   };
   const onChangeHash = (event) =>{
     const {target:{value}, } = event;
     setHashTag(value);
-    console.log(value);
+    
 
 };
+
+    
     
     const onFind = (event) => {
-
-      const q = query(
-            
-        collection(dbService, "tweets"),
-        orderBy("createdAt", "desc")
-        );
-        
-         onSnapshot(q, (snapshot) => {
-        const tweetArr = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        }));
-        
-        console.log(tweetArr);
-        setTweets(tweetArr);
-        
-        
-        
-        });
       
       console.log(authService.currentUser.email)
      
@@ -215,13 +186,7 @@ const TweetFactory = ({userObj, userArr}) => {
             updateDoc(doc(dbService, "tweets", `${tweets[i].id}`), {
               count: 1,
               });
-          }
-          else if(tweets[i].user == tweet){
-            updateDoc(doc(dbService, "tweets", `${tweets[i].user}`), {
-              count: 2,
-              });
-          }
-          else{
+          }else{
             updateDoc(doc(dbService, "tweets", `${tweets[i].id}`), {
               count: 0,
               });
@@ -233,11 +198,7 @@ const TweetFactory = ({userObj, userArr}) => {
       console.log(tweets.length);
       
     };
-    const togglePosting = () => setPosting(prev => !prev);
-
-    const toggleMyPost = () => setMine(prev => !prev);
-
-    const toggleFriend = () => setfriend(prev => !prev);
+    const togglePosting = () => {setPosting(prev => !prev)};
     
     const onFileChange = (event) => {
         const {target:{files}, } = event;
@@ -256,8 +217,8 @@ const TweetFactory = ({userObj, userArr}) => {
       
       posting ? 
       <>
+      
         <form onSubmit={onSubmit} className="factoryForm">
-        
           
         <div className="factoryInput__container">
         <table>
@@ -309,69 +270,11 @@ const TweetFactory = ({userObj, userArr}) => {
         </form>
         </>
         :
-
-
-
-
-
-        mine ? 
-        <>
-        <span onClick={toggleMyPost} className="formBtn cancelBtn">
-          Back
-          </span>
-          <br>
-          </br>
-         
-        
-          <span className="postBtn">This is My Post!!!!!</span>
-        <div style={{ marginTop: 30 }}>
-
-            {tweets.map((tweet) => (
-                (tweet.count == 1 &&tweet.creatorId === userObj.uid&&
-                <Tweet key={tweet.id} tweetObj={tweet} isOwner = {tweet.creatorId === userObj.uid} currentuser = {userObj.uid}/>)
-            ))}
-
-            <div ref={setTarget} className="Target-Element">
-              {isLoaded && <Loader />}
-            </div>
-        </div>
-        </>
-        :
-
-
-        friend ? //미완성
-        <>
-          <span onClick={toggleMyPost} className="formBtn cancelBtn">
-          Back
-          </span>
-          <br>
-          </br>
-         
-        
-          <span className="postBtn">This is My Post!!!!!</span>
-        <div style={{ marginTop: 30 }}>
-
-            {tweets.map((tweet) => (
-                (tweet.count == 1 &&tweet.creatorId === userObj.uid&&
-                <Tweet key={tweet.id} tweetObj={tweet} isOwner = {tweet.creatorId === userObj.uid} currentuser = {userObj.uid}/>)
-            ))}
-
-            <div ref={setTarget} className="Target-Element">
-              {isLoaded && <Loader />}
-            </div>
-        </div>
-        </>
-        :
-
-
+        profile ? 
         <>
         
         <span onClick={togglePosting} className="postBtn">
           Post
-        </span>
-
-        <span onClick={toggleMyPost} className="postBtn">
-          my post
         </span>
         
           
@@ -394,7 +297,8 @@ const TweetFactory = ({userObj, userArr}) => {
 
             {tweets.map((tweet) => (
                 (tweet.count == 1 &&
-                <Tweet key={tweet.id} tweetObj={tweet} isOwner = {tweet.creatorId === userObj.uid} currentuser = {userObj.uid} userArr={userArr}/>)
+                <Tweet key={tweet.id} tweetObj={tweet} isOwner = {tweet.creatorId === userObj.uid} currentuser = {userObj.uid} userArr={userArr} defprofile = {defURL}/>)
+               
             ))}
 
             <div ref={setTarget} className="Target-Element">
@@ -403,6 +307,9 @@ const TweetFactory = ({userObj, userArr}) => {
         </div>
         
         
+    </>
+    : 
+    <>
     </>
     )
 }

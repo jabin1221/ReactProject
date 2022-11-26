@@ -1,15 +1,16 @@
 import { dbService, storageService } from "fBase";
 import React, { useEffect, useState, useRef } from "react";
-import { doc, deleteDoc, updateDoc }from "firebase/firestore";
+import { doc, getDoc, deleteDoc, updateDoc }from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import {Route} from 'react-router-dom';
+import styled, {css} from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPencilAlt, faHeartBroken, faHeartCircleMinus, faPersonWalkingDashedLineArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faUser, faUserCircle, faHeart } from "@fortawesome/free-solid-svg-icons";
 import {Link} from "react-router-dom";
 import {orderBy, onSnapshot, query, getDocs, addDoc, collection } from "firebase/firestore";
 
-const Tweet = ({tweetObj, isOwner, currentuser, userArr}) => {
+const Tweet = ({tweetObj, isOwner, currentuser, userArr, defprofile}) => {
     const [editing, setEditing] = useState(false);
     const [newTweet, setNewTweet] = useState(tweetObj.text);
     const [heart, setHeart] = useState(false);
@@ -30,10 +31,9 @@ const Tweet = ({tweetObj, isOwner, currentuser, userArr}) => {
                 setalreadyselected(1)
                 
             }
-            
-            
         }
         let count = 0
+        console.log(userArr)
         for(let i = 0 ; i < userArr.length; i++){
             if(userArr[i].uid == tweetObj.creatorId){
                 if(userArr[i].show == "only friend" && tweetObj.creatorId != currentuser){
@@ -56,11 +56,8 @@ const Tweet = ({tweetObj, isOwner, currentuser, userArr}) => {
             setShows(false)
         }
         
-        
-        
     }, []);
 
-    
 
     
 
@@ -132,7 +129,6 @@ const Tweet = ({tweetObj, isOwner, currentuser, userArr}) => {
                     console.log(TweetTextRef)
                     setalreadyselected(1)
                     setHeartcount(heartcount + 1)
-                    
             }
             else{ // 데이터베이스에 갱신하고 화면갱신
                 const newList = heartuserlist.filter(sch => sch != currentuser)
@@ -145,7 +141,6 @@ const Tweet = ({tweetObj, isOwner, currentuser, userArr}) => {
                     console.log(TweetTextRef2)
                     setalreadyselected(0)
                     setHeartcount(heartcount - 1)
-                    
             }
         setHeart(prev => !prev);
         
@@ -187,11 +182,23 @@ const Tweet = ({tweetObj, isOwner, currentuser, userArr}) => {
                 </>
                  :
                 <>
+                <div>
+            
+                     <img   
+                     src={tweetObj.userURL ? tweetObj.userURL : defprofile}
+                     style={{
+                        marginRight:215,
+                        marginTop:-125,
+                        borderRadius:100,
+                        width:30,
+                        height:30
+                    }}
+                     /> 
+                    <h4 style={{marginLeft:40}}>{tweetObj.name? tweetObj.name : "username"}<br/>{tweetObj.user}</h4>
+                </div>
                 <h4 className="textview">{tweetObj.text}</h4>
                 {tweetObj.attachmentUrl && <img src={tweetObj.attachmentUrl} className="pic" />}
-                <span onClick={gotoProfile}>
-                <FontAwesomeIcon icon={faUserCircle} color={"#04AAFF"} size="2x" className="profileicon" />
-                </span>
+
                 <h4 className="favorcount">{heartcount}</h4>
                 <h3>{tweetObj.hashTag}</h3>
                 {isOwner && (
@@ -217,10 +224,9 @@ const Tweet = ({tweetObj, isOwner, currentuser, userArr}) => {
         </div>
         :
         <div className="nweet">
-        <h1>Only Friend</h1>
+        <h1>Only Friend can see</h1>
         </div>
     )
 };
 
 export default Tweet;
-

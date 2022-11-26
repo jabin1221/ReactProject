@@ -304,7 +304,7 @@ return (
                 </MenuList>
                 <MenuList to="/friend">
                   <IconContainer icon={faUserCircle}></IconContainer>
-                  <IconText>친구</IconText>
+                  <IconText>전체유저</IconText>
                 </MenuList>
                 <MenuList to="/setting">
                   <IconContainer icon={faChain}></IconContainer>

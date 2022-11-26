@@ -39,6 +39,12 @@ form {
   opacity: 0.9;
 }
 
+.name{
+  position: relative;
+  font-size: 12px;
+  left : 25px;
+  top: -3px;
+}
 
 
 .container {
@@ -335,19 +341,19 @@ form {
 .profileicon{
   position: relative;
   right : 10px;
-  top : -22px;
+  top : -35px;
 }
 
 .textview{
   position: relative;
-  top : 25px;
+  top : 50px;
   right : 10px;
 }
 
 .favorcount{
   position: relative;
   right: -240px;
-  top: 305px;
+  top: 308px;
 }
 
 
@@ -391,7 +397,7 @@ form {
 .heart{
   position: relative;
   right: -260px;
-  top: 290px;
+  top: 295px;
 }
 
 /* Auth */

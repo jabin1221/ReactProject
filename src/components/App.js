@@ -5,30 +5,27 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { updateProfile } from "@firebase/auth";
 import { dbService, storageService } from "fBase";
 import {orderBy, onSnapshot, query, getDocs, addDoc, collection, doc } from "firebase/firestore";
-import Clock from "components/Clock";
-import { faAllergies } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
   console.log(authService.currentUser);
   const [init, setInit] = useState(false);
   const [userObj, setUserObj] = useState(null);
   useEffect(()=>{
+
     
-    
-    const auth = getAuth()
+
     authService.onAuthStateChanged(async (user)=>{
       if(user){
-        
+        let photo =""
+          if(authService.currentUser.photoURL !== "") {
+            photo = authService.currentUser.photoURL
+          }
         setUserObj({
           displayName: user.displayName,
           uid: user.uid,
-          following: user.following, // 팔로잉 내가 한사람
-          followings: user.followings,
-          follow: user.follow, // 팔로우 해준 사람
-          follows: user.follows,
-          show: user.show,
-          name: "test",
-          updateProfile: (args) => updateProfile(user, { displayName: user.displayName }),
+          photoURL: photo,
+          name:user.name,
+          updateProfile: (args) => updateProfile(user, { displayName: user.displayName, photoURL: user.photoURL }),
           });
 
           
@@ -47,20 +44,14 @@ function App() {
     setUserObj({
       displayName: user.displayName,
       uid: user.uid,
-      following: user.following, // 팔로잉 내가 한사람
-          followings: user.followings,
-          follow: user.follow, // 팔로우 해준 사람
-          follows: user.follows,
-          show: user.show,
-          name: user.name,
-      updateProfile: (args) => updateProfile(user, { displayName: user.displayName }),
+      photoUrl: user.photoURL,
+      name:user.name,
+      updateProfile: (args) => updateProfile(user, { displayName: user.displayName, photoURL: user.photoURL, name:user.name}),
       });
       
   };
   return (
     <>
-    
-    <Clock />
       {init ? (
 
         <AppRouter
@@ -71,7 +62,6 @@ function App() {
       ) : (
         "Initializing..."
       )}
-      
     </>
   );
     
