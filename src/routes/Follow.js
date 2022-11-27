@@ -13,8 +13,9 @@ import { faUser, faUserCircle, faHeart } from "@fortawesome/free-solid-svg-icons
 import View from "components/View";
 
 
-const Friend = ({userObj, refreshUser}) => {
+const Follow = ({userObj, refreshUser}) => {
     const [users, setUsers] = useState([])
+    const [users2, setUsers2] = useState([])
     const [tweets, setTweets] = useState([])
     const [viewing, setViewing] = useState(true)
     const [destuser, Setdestuser] = useState(null)
@@ -22,17 +23,45 @@ const Friend = ({userObj, refreshUser}) => {
     
     
     useEffect(() => {
+        console.log(userObj)
         const q = query(
             collection(dbService, "users"),
             
             );
             onSnapshot(q, (snapshot) => {
-            const userArr = snapshot.docs.map((doc) => ({
+            let userArr = snapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
+            followcheck: 0,
+            followingcheck: 0,
             }));
-        setUsers(userArr);
+        
+        for(let i = 0 ; i < userArr.length; i++){
+            if(userArr[i].follow){
+                for(let j = 0 ; j < userArr[i].follow; j ++){
+                    if(userArr[i].follows[j] == userObj.uid){
+                        userArr[i].followcheck = 1
+                    }
+                }
+            }
+            
+        }
+        for(let i = 0 ; i < userArr.length; i++){
+            if(userArr[i].following){
+                for(let j = 0 ; j < userArr[i].following; j ++){
+                    if(userArr[i].followings[j] == userObj.uid){
+                        userArr[i].followingcheck = 1
+                    }
+                }
+            }
+            
+        }
+        const followarray = userArr.filter(sch => (sch.followcheck == 1))
+        const followingarray = userArr.filter(sch => (sch.followingcheck == 1))
+        setUsers(followarray);
+        setUsers2(followingarray);
         console.log(userArr)
+        console.log(users)
             });
             console.log(users)
     }, []);
@@ -74,6 +103,7 @@ const Friend = ({userObj, refreshUser}) => {
         viewing ? 
         <>
         <div>
+            <h2>팔로우한 유저</h2><br></br>
             {users.map((user) =>
             <><div>
             <span onClick={() => profile(user)}>
@@ -82,6 +112,19 @@ const Friend = ({userObj, refreshUser}) => {
             {user.displayName}</div>
             <br></br>
             </>)}
+            
+
+            <h3>----------------------------</h3>
+            <h2>나를 팔로우한 유저</h2><br></br>
+            {users2.map((user) =>
+            <><div>
+            <span onClick={() => profile(user)}>
+            <FontAwesomeIcon icon={faUserCircle} color={"#04AAFF"} size="2x" className="profileicon2" />
+            </span>
+            {user.displayName}</div>
+            <br></br>
+            </>)}
+            
 
         </div>
         </>
@@ -94,4 +137,4 @@ const Friend = ({userObj, refreshUser}) => {
     )
 }
 
-export default Friend;
+export default Follow;

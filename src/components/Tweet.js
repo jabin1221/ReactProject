@@ -10,7 +10,7 @@ import { faUser, faUserCircle, faHeart } from "@fortawesome/free-solid-svg-icons
 import {Link} from "react-router-dom";
 import {orderBy, onSnapshot, query, getDocs, addDoc, collection } from "firebase/firestore";
 
-const Tweet = ({tweetObj, isOwner, currentuser, userArr, defprofile}) => {
+const Tweet = ({gotoProfile, tweetObj, isOwner, currentuser, userArr, defprofile}) => {
     const [editing, setEditing] = useState(false);
     const [newTweet, setNewTweet] = useState(tweetObj.text);
     const [heart, setHeart] = useState(false);
@@ -61,44 +61,7 @@ const Tweet = ({tweetObj, isOwner, currentuser, userArr, defprofile}) => {
 
     
 
-    const gotoProfile = (event) => { // 미구현
-        event.preventDefault();
-        
-        const q = query(
-            
-            collection(dbService, "tweets"),
-            orderBy("createdAt", "desc")
-            );
-            
-             onSnapshot(q, (snapshot) => {
-            const tweetArr = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-            }));
-            
-            console.log(tweetArr);
-            setTweets(tweetArr);
-            
-            });
-            
-            console.log(tweets.length);
-            
-            for(let i = 0 ; i < tweets.length; i++){
-                if(tweets[i].creatorId != currentuser){
-                    updateDoc(doc(dbService, "tweets", `${tweets[i].id}`), {
-                        count: 0,
-                        });
-                    console.log(currentuser);
-                    }
-                    else{
-                        updateDoc(doc(dbService, "tweets", `${tweets[i].id}`), {
-                            count: 1,
-                            });
-                        }
-                        const p = query(
-                            collection(dbService, "users"));
-                    }
-    }
+    
     const onDeleteClick = async () => { // 삭제후 새로고침
         const ok = window.confirm("Are you sure you want to delete this tweet?");
         console.log(ok);
@@ -183,7 +146,7 @@ const Tweet = ({tweetObj, isOwner, currentuser, userArr, defprofile}) => {
                  :
                 <>
                 <div>
-            
+                <div onClick={()=>gotoProfile(tweetObj.creatorId)}>
                      <img   
                      src={tweetObj.userURL ? tweetObj.userURL : defprofile}
                      style={{
@@ -200,6 +163,7 @@ const Tweet = ({tweetObj, isOwner, currentuser, userArr, defprofile}) => {
                 {tweetObj.attachmentUrl && <img src={tweetObj.attachmentUrl} className="pic" />}
 
                 <h4 className="favorcount">{heartcount}</h4>
+                </div>
                 <h3>{tweetObj.hashTag}</h3>
                 {isOwner && (
                 <><div className="nweet__actions">
@@ -224,7 +188,7 @@ const Tweet = ({tweetObj, isOwner, currentuser, userArr, defprofile}) => {
         </div>
         :
         <div className="nweet">
-        <h1>Only Friend can see</h1>
+        <h1>Only Follower can see</h1>
         </div>
     )
 };

@@ -306,6 +306,10 @@ return (
                   <IconContainer icon={faUserCircle}></IconContainer>
                   <IconText>전체유저</IconText>
                 </MenuList>
+                <MenuList to="/follow">
+                  <IconContainer icon={faUserCircle}></IconContainer>
+                  <IconText>팔로우</IconText>
+                </MenuList>
                 <MenuList to="/setting">
                   <IconContainer icon={faChain}></IconContainer>
                   <IconText>공개설정</IconText>
